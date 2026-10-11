@@ -1,0 +1,586 @@
+{
+  "source": "l2jserver/src/main/java",
+  "types": {
+    "c": {
+      "size": 1,
+      "description": "целое, 1 байт"
+    },
+    "h": {
+      "size": 2,
+      "description": "целое, 2 байта, little-endian"
+    },
+    "d": {
+      "size": 4,
+      "description": "целое, 4 байта, little-endian"
+    },
+    "q": {
+      "size": 8,
+      "description": "целое, 8 байт, little-endian"
+    },
+    "f": {
+      "size": 8,
+      "description": "double, 8 байт, little-endian"
+    },
+    "s": {
+      "size": null,
+      "description": "строка UTF-16LE, завершается нулевым символом (2 байта)"
+    },
+    "b": {
+      "size": null,
+      "description": "массив байт, длина в поле length (если известна)"
+    }
+  },
+  "legend": {
+    "kind": {
+      "field": "одно значение типа type; name — путь от DTO или элемента цикла (null — константа/заглушка), value — константа, expr — выражение из serder'а, length — длина для b, javaType — тип в DTO",
+      "loop": "повторяющийся блок fields; count — поле/выражение с количеством повторов (если count нет — количество в этом месте пакета не передаётся), condition — условие продолжения",
+      "if": "блок fields присутствует при выполнении condition, иначе — блок else (если есть)",
+      "switch": "один из блоков cases по значению on"
+    },
+    "format": "компактная запись раскладки без опкода: [..] — цикл, (a|b) — варианты по условию",
+    "opcode": "байты опкода через ':'; в fields опкод не входит"
+  },
+  "groups": [
+    {
+      "id": "loginserver.client",
+      "package": "net.sf.l2j.loginserver.client",
+      "title": "Клиент <-> LoginServer",
+      "packets": {
+        "c2s": [
+          {
+            "name": "RequestAuthLogin",
+            "opcode": "0x00",
+            "opcodes": [
+              0
+            ],
+            "direction": "c2s",
+            "format": "b",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.in.RequestAuthLogin",
+            "dto": "net.sf.l2j.loginserver.client.dto.in.RequestAuthLoginDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "encrypted",
+                "type": "b",
+                "length": 128,
+                "javaType": "byte[]"
+              }
+            ]
+          },
+          {
+            "name": "RequestServerLogin",
+            "opcode": "0x02",
+            "opcodes": [
+              2
+            ],
+            "direction": "c2s",
+            "format": "ddc",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.in.RequestServerLogin",
+            "dto": "net.sf.l2j.loginserver.client.dto.in.RequestServerLoginDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "loginPart1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "loginPart2",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "serverId",
+                "type": "c",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "RequestServerList",
+            "opcode": "0x05",
+            "opcodes": [
+              5
+            ],
+            "direction": "c2s",
+            "format": "dd",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.in.RequestServerList",
+            "dto": "net.sf.l2j.loginserver.client.dto.in.RequestServerListDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "loginPart1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "loginPart2",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "RequestSCCheck",
+            "opcode": "0x06",
+            "opcodes": [
+              6
+            ],
+            "direction": "c2s",
+            "format": "db",
+            "description": "Ответ на [SCCheckReqDto][net.sf.l2j.loginserver.client.dto.out.SCCheckReqDto] с введенным кодом.",
+            "serder": "net.sf.l2j.loginserver.client.serder.in.RequestSCCheck",
+            "dto": "net.sf.l2j.loginserver.client.dto.in.RequestSCCheckDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "id",
+                "type": "d",
+                "javaType": "int",
+                "description": "ID из [SCCheckReqDto][net.sf.l2j.loginserver.client.dto.out.SCCheckReqDto]."
+              },
+              {
+                "kind": "field",
+                "name": "encrypted",
+                "type": "b",
+                "length": 128,
+                "javaType": "byte[]",
+                "description": "Зашифрованный RSA массив. Шифрование аналогично [RequestAuthLoginDto]."
+              }
+            ]
+          },
+          {
+            "name": "AuthGameGuard",
+            "opcode": "0x07",
+            "opcodes": [
+              7
+            ],
+            "direction": "c2s",
+            "format": "ddddd",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.in.AuthGameGuard",
+            "dto": "net.sf.l2j.loginserver.client.dto.in.AuthGameGuardDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "sessionId",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "data1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "data2",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "data3",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "data4",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          }
+        ],
+        "s2c": [
+          {
+            "name": "Init",
+            "opcode": "0x00",
+            "opcodes": [
+              0
+            ],
+            "direction": "s2c",
+            "format": "ddbbbc",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.Init",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.InitDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "sessionId",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "protocolVersion",
+                "type": "d",
+                "value": 50721
+              },
+              {
+                "kind": "field",
+                "name": "publicKey",
+                "type": "b",
+                "javaType": "byte[]"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "b",
+                "length": 16,
+                "value": 0
+              },
+              {
+                "kind": "field",
+                "name": "blowfishKey",
+                "type": "b",
+                "javaType": "byte[]"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "c",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "name": "LoginFail",
+            "opcode": "0x01",
+            "opcodes": [
+              1
+            ],
+            "direction": "s2c",
+            "format": "c",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.LoginFail",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.LoginFailDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "reason.id",
+                "type": "c",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "BlockedAccount",
+            "opcode": "0x02",
+            "opcodes": [
+              2
+            ],
+            "direction": "s2c",
+            "format": "dd",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.BlockedAccount",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.BlockedAccountDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "reason.code",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "name": "LoginOk",
+            "opcode": "0x03",
+            "opcodes": [
+              3
+            ],
+            "direction": "s2c",
+            "format": "ddddddddb",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.LoginOk",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.LoginOkDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "loginOk1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "loginOk2",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "loginOk3",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "loginOk4",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "loginType",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0,
+                "description": "m0nster: баг в клиенте"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0,
+                "description": "m0nster: не используется клиентом"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0,
+                "description": "m0nster: не используется клиентом"
+              },
+              {
+                "kind": "field",
+                "name": "forbiddenServerFlags",
+                "type": "b",
+                "javaType": "byte[]",
+                "description": "Закрашивает красным сервер в списке.\nКаждый бит ID сервера."
+              }
+            ]
+          },
+          {
+            "name": "ServerList",
+            "opcode": "0x04",
+            "opcodes": [
+              4
+            ],
+            "direction": "s2c",
+            "format": "cc[cbdcchhcdc]",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.ServerList",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.ServerListDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "servers.size",
+                "type": "c",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "lastServer",
+                "type": "c",
+                "javaType": "int"
+              },
+              {
+                "kind": "loop",
+                "name": "servers",
+                "count": "servers.size",
+                "fields": [
+                  {
+                    "kind": "field",
+                    "name": "id",
+                    "type": "c",
+                    "javaType": "int"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "host",
+                    "type": "b",
+                    "javaType": "byte[]"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "port",
+                    "type": "d",
+                    "javaType": "int"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "ageLimit.ordinal",
+                    "type": "c",
+                    "javaType": "int"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "pvpAllowed",
+                    "type": "c",
+                    "expr": "server.isPvpAllowed() ? 0x01 : 0x00"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "currentPlayers",
+                    "type": "h",
+                    "javaType": "int"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "maxPlayers",
+                    "type": "h",
+                    "javaType": "int"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "status",
+                    "type": "c",
+                    "expr": "server.getStatus() == ServerStatusType.DOWN ? 0x00 : 0x01"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "serverConfigurationFlags",
+                    "type": "d",
+                    "javaType": "int"
+                  },
+                  {
+                    "kind": "field",
+                    "name": "region",
+                    "type": "c",
+                    "javaType": "int"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "PlayFail",
+            "opcode": "0x06",
+            "opcodes": [
+              6
+            ],
+            "direction": "s2c",
+            "format": "c",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.PlayFail",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.PlayFailDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "reason.id",
+                "type": "c",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "PlayOk",
+            "opcode": "0x07",
+            "opcodes": [
+              7
+            ],
+            "direction": "s2c",
+            "format": "dd",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.PlayOk",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.PlayOkDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "playOk1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "playOk2",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "SCCheckReq",
+            "opcode": "0x0A",
+            "opcodes": [
+              10
+            ],
+            "direction": "s2c",
+            "format": "dc",
+            "description": "Проверка кода безопасности с карты.\nДолжен отсылаться после RequestAuthLogin. В ответ приходит [RequestSCCheckDto][net.sf.l2j.loginserver.client.dto.in.RequestSCCheckDto].",
+            "serder": "net.sf.l2j.loginserver.client.serder.out.SCCheckReq",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.SCCheckReqDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "id",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "codeIndex",
+                "type": "c",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "GameGuardAuth",
+            "opcode": "0x0B",
+            "opcodes": [
+              11
+            ],
+            "direction": "s2c",
+            "format": "ddddd",
+            "description": null,
+            "serder": "net.sf.l2j.loginserver.client.serder.out.GameGuardAuth",
+            "dto": "net.sf.l2j.loginserver.client.dto.out.GameGuardAuthDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "response",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0
+              },
+              {
+                "kind": "field",
+                "name": null,
+                "type": "d",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+# Зависимости и сборка
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Локальное окружение
+.env
+.env.*
+!.env.example
+*.local
+
+# Логи
+*.log
+npm-debug.log*
+
+# IDE и ОС
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Инструменты
+.claude/

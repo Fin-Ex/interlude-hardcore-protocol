@@ -1,0 +1,345 @@
+{
+  "source": "l2jserver/src/main/java",
+  "types": {
+    "c": {
+      "size": 1,
+      "description": "целое, 1 байт"
+    },
+    "h": {
+      "size": 2,
+      "description": "целое, 2 байта, little-endian"
+    },
+    "d": {
+      "size": 4,
+      "description": "целое, 4 байта, little-endian"
+    },
+    "q": {
+      "size": 8,
+      "description": "целое, 8 байт, little-endian"
+    },
+    "f": {
+      "size": 8,
+      "description": "double, 8 байт, little-endian"
+    },
+    "s": {
+      "size": null,
+      "description": "строка UTF-16LE, завершается нулевым символом (2 байта)"
+    },
+    "b": {
+      "size": null,
+      "description": "массив байт, длина в поле length (если известна)"
+    }
+  },
+  "legend": {
+    "kind": {
+      "field": "одно значение типа type; name — путь от DTO или элемента цикла (null — константа/заглушка), value — константа, expr — выражение из serder'а, length — длина для b, javaType — тип в DTO",
+      "loop": "повторяющийся блок fields; count — поле/выражение с количеством повторов (если count нет — количество в этом месте пакета не передаётся), condition — условие продолжения",
+      "if": "блок fields присутствует при выполнении condition, иначе — блок else (если есть)",
+      "switch": "один из блоков cases по значению on"
+    },
+    "format": "компактная запись раскладки без опкода: [..] — цикл, (a|b) — варианты по условию",
+    "opcode": "байты опкода через ':'; в fields опкод не входит"
+  },
+  "groups": [
+    {
+      "id": "gameserver.auth",
+      "package": "net.sf.l2j.gameserver.auth",
+      "title": "GameServer <-> LoginServer (сторона GameServer)",
+      "packets": {
+        "ls2gs": [
+          {
+            "name": "InitAuth",
+            "opcode": "0x00",
+            "opcodes": [
+              0
+            ],
+            "direction": "ls2gs",
+            "format": "d",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.in.InitAuth",
+            "dto": "net.sf.l2j.gameserver.auth.dto.in.InitAuthDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "protocolVersion",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "AuthFail",
+            "opcode": "0x01",
+            "opcodes": [
+              1
+            ],
+            "direction": "ls2gs",
+            "format": "d",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.in.AuthFail",
+            "dto": "net.sf.l2j.gameserver.auth.dto.in.AuthFailDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "reason",
+                "type": "d",
+                "javaType": "LoginServerFailReason",
+                "expr": "LoginServerFailReason.values()[buffer.readIntLE()]"
+              }
+            ]
+          },
+          {
+            "name": "AuthResponse",
+            "opcode": "0x02",
+            "opcodes": [
+              2
+            ],
+            "direction": "ls2gs",
+            "format": "ds",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.in.AuthResponse",
+            "dto": "net.sf.l2j.gameserver.auth.dto.in.AuthResponseDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "serverId",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "serverName",
+                "type": "s",
+                "javaType": "String"
+              }
+            ]
+          },
+          {
+            "name": "PlayerAuthResponse",
+            "opcode": "0x03",
+            "opcodes": [
+              3
+            ],
+            "direction": "ls2gs",
+            "format": "sc",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.in.PlayerAuthResponse",
+            "dto": "net.sf.l2j.gameserver.auth.dto.in.PlayerAuthResponseDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "login",
+                "type": "s",
+                "javaType": "String"
+              },
+              {
+                "kind": "field",
+                "name": "response",
+                "type": "c",
+                "javaType": "boolean",
+                "expr": "buffer.readByte() != 0x00"
+              }
+            ]
+          },
+          {
+            "name": "KickPlayer",
+            "opcode": "0x04",
+            "opcodes": [
+              4
+            ],
+            "direction": "ls2gs",
+            "format": "s",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.in.KickPlayer",
+            "dto": "net.sf.l2j.gameserver.auth.dto.in.KickPlayerDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "login",
+                "type": "s",
+                "javaType": "String"
+              }
+            ]
+          }
+        ],
+        "gs2ls": [
+          {
+            "name": "GameServerAuth",
+            "opcode": "0x01",
+            "opcodes": [
+              1
+            ],
+            "direction": "gs2ls",
+            "format": "dsh",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.out.GameServerAuth",
+            "dto": "net.sf.l2j.gameserver.auth.dto.out.GameServerAuthDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "id",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "hostname",
+                "type": "s",
+                "javaType": "String"
+              },
+              {
+                "kind": "field",
+                "name": "port",
+                "type": "h",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "PlayerInGame",
+            "opcode": "0x02",
+            "opcodes": [
+              2
+            ],
+            "direction": "gs2ls",
+            "format": "h[s]",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.out.PlayerInGame",
+            "dto": "net.sf.l2j.gameserver.auth.dto.out.PlayerInGameDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "logins.size",
+                "type": "h",
+                "javaType": "int"
+              },
+              {
+                "kind": "loop",
+                "name": "logins",
+                "count": "logins.size",
+                "fields": [
+                  {
+                    "kind": "field",
+                    "name": "login",
+                    "type": "s",
+                    "javaType": "String"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "PlayerLogout",
+            "opcode": "0x03",
+            "opcodes": [
+              3
+            ],
+            "direction": "gs2ls",
+            "format": "s",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.out.PlayerLogout",
+            "dto": "net.sf.l2j.gameserver.auth.dto.out.PlayerLogoutDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "login",
+                "type": "s",
+                "javaType": "String"
+              }
+            ]
+          },
+          {
+            "name": "ChangeAccessLevel",
+            "opcode": "0x04",
+            "opcodes": [
+              4
+            ],
+            "direction": "gs2ls",
+            "format": "sd",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.out.ChangeAccessLevel",
+            "dto": "net.sf.l2j.gameserver.auth.dto.out.ChangeAccessLevelDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "account",
+                "type": "s",
+                "javaType": "String"
+              },
+              {
+                "kind": "field",
+                "name": "level",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "PlayerAuthRequest",
+            "opcode": "0x05",
+            "opcodes": [
+              5
+            ],
+            "direction": "gs2ls",
+            "format": "sdddd",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.out.PlayerAuthRequest",
+            "dto": "net.sf.l2j.gameserver.auth.dto.out.PlayerAuthRequestDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "login",
+                "type": "s",
+                "javaType": "String"
+              },
+              {
+                "kind": "field",
+                "name": "sessionKey.playOkID1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "sessionKey.playOkID2",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "sessionKey.loginOkID1",
+                "type": "d",
+                "javaType": "int"
+              },
+              {
+                "kind": "field",
+                "name": "sessionKey.loginOkID2",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          },
+          {
+            "name": "ServerStatus",
+            "opcode": "0x06",
+            "opcodes": [
+              6
+            ],
+            "direction": "gs2ls",
+            "format": "d",
+            "description": null,
+            "serder": "net.sf.l2j.gameserver.auth.serder.out.ServerStatus",
+            "dto": "net.sf.l2j.gameserver.auth.dto.out.ServerStatusDto",
+            "fields": [
+              {
+                "kind": "field",
+                "name": "serverStatusType.ordinal",
+                "type": "d",
+                "javaType": "int"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
